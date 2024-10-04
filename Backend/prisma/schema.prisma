@@ -1,0 +1,231 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Tipo_Ident {
+  AS
+  CC
+  CE
+  MV
+  RC
+  TI
+}
+
+enum Sex {
+ Femenino
+ Masculino
+ Indetermidado
+}
+
+
+enum Tipo_Usuario {
+ Contributivo
+ Subsidiado
+ Vinculado
+ Particular
+ Otro
+}
+
+
+model Usuario{
+id_usuario Int @id @default(autoincrement())
+tipo_identificacion Tipo_Ident
+identificacion BigInt @unique
+primer_nombre String @db.VarChar(50)
+segundo_nombre String? @db.VarChar(50)
+primer_apellido String @db.VarChar(50)
+segundo_apellido String? @db.VarChar(50)
+fecha_nacimiento DateTime
+sexo Sex
+email String @unique
+telefono String?
+tipo_usuario Tipo_Usuario
+municipio Int
+createAt DateTime @default(now())
+updateAt DateTime @updatedAt()
+procedimiento Procedimiento[]
+eps Int
+Municipio_Usuario Municipio @relation(fields: [municipio], references: [id_municipio])
+Eps_usuario Eps @relation(fields: [eps],references: [id_eps])
+@@map("usuarios")
+
+}
+
+
+
+enum Estado {
+ Activo
+ Inactivo
+}
+model Eps{
+id_eps Int @id @default(autoincrement())
+codigo String @db.VarChar(20)
+nombre String @db.VarChar(50)
+estado Estado
+usuario Usuario[]
+@@map("eps")
+}
+
+model Procedimiento{
+id_procedimiento Int @id @default(autoincrement())
+consecutivo Int
+fecha DateTime 
+factura Int
+usuario Int
+acuerdo Int
+Procedimiento_Acuerdo Acuerdo @relation(fields: [acuerdo], references: [id_acuerdo])
+Procedimiento_Usuario Usuario @relation(fields: [usuario], references: [id_usuario])
+@@map("procedimientos")
+}
+
+
+model Departamento{
+id_departamento Int @id @default(autoincrement())
+nombre String @db.VarChar(50)
+municipio Municipio[]
+@@map("departamentos")
+}
+
+
+model Municipio{
+id_municipio Int @id @default(autoincrement())
+nombre String @db.VarChar(50)
+departamento Int
+suario Usuario[]
+empresa Empresa[]
+Departamentos_Municipio Departamento @relation(fields: [departamento], references: [id_departamento])
+@@map("Municipios")
+}
+
+
+
+
+model Servicio{
+id_servicio Int @id @default(autoincrement())
+nombre String @db.VarChar(50)
+precio Decimal @db.Decimal(10,2)
+iva Decimal @db.Decimal(10,2)
+nivel Int
+tarifa Int
+protocolo Int
+prestador Int
+
+Tarifa_Servicio Tarifa @relation(fields: [tarifa],references: [id_tarifa])
+Tarifa_Protocolo Protocolo @relation(fields: [protocolo],references: [id_protocolo])
+Prestador_Servicio Prestador @relation(fields: [prestador],references: [id_prestador])
+@@map("Servicios")
+}
+
+
+
+model Prestador{
+id_prestador Int @id @default(autoincrement())
+codigo BigInt
+razon_social String @db.VarChar(50)
+consecutivo Int
+servicio Servicio[]
+empleado Empleado[]
+@@map("Prestadores")
+}
+
+
+enum Rol {
+ Administrador
+Facturacion
+Bacteriologo
+}
+
+
+model Empleado{
+id_empleado Int @id @default(autoincrement())
+identificacion BigInt
+nombre String @db.VarChar(30)
+cargo String @db.VarChar(50)
+rol Rol
+password String @db.VarChar(20)
+prestador Int
+Pretador_Empleado Prestador @relation(fields: [prestador],references: [id_prestador])
+@@map("Empleados")
+}
+
+
+model Tarifa{
+id_tarifa Int @id @default(autoincrement())
+nombre String @db.VarChar(50)
+precio Decimal@db.Decimal(10,2)
+servicio Servicio[]
+acuerdo Acuerdo[]
+estado Estado
+@@map("tarifas")
+}
+
+model Protocolo{
+id_protocolo Int @id @default(autoincrement())
+nombre String @db.VarChar(50)
+estado Estado
+servicio Servicio[]
+@@map("Protocolos")
+}
+
+
+
+
+enum Tipo_Empresa{
+  Particular
+  Empresa
+  Eps
+  Esess
+}
+
+
+model Empresa{
+id_empresa Int @id @default(autoincrement())
+nit String @db.VarChar(530)
+codigo Int
+nombre String @db.VarChar(50)
+sigla String @db.VarChar(50)
+tipo Tipo_Empresa
+estado Estado
+municipio Int
+contrato Contrato[]
+Muncipio_Empresa Municipio @relation(fields: [municipio],references: [id_municipio])
+@@map("Empresas")
+}
+
+
+model Contrato{
+id_contrato Int @id @default(autoincrement())
+fecha_inicio DateTime @db.Date
+fecha_fin DateTime @db.Date
+estado Estado
+empresa Int
+acuerdo Acuerdo[]
+Contrato_Empresa Empresa @relation(fields: [empresa],references: [id_empresa])
+@@map("Contratos")
+}
+
+
+model Acuerdo{
+id_acuerdo Int @id @default(autoincrement())
+estado Estado
+contrato Int
+valor Decimal @db.Decimal(10,2)
+tarifa Int
+procedimiento Procedimiento[]
+Contrato_Acuerdo Contrato @relation(fields: [contrato],references: [id_contrato])
+Tarifa_Acuerdo Tarifa @relation(fields: [tarifa],references: [id_tarifa])
+@@map("Acuerdos")
+}
+
+
