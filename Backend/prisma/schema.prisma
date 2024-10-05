@@ -42,7 +42,7 @@ enum Tipo_Usuario {
 model Usuario{
 id_usuario Int @id @default(autoincrement())
 tipo_identificacion Tipo_Ident
-identificacion BigInt @unique
+identificacion String @db.VarChar(20)
 primer_nombre String @db.VarChar(50)
 segundo_nombre String? @db.VarChar(50)
 primer_apellido String @db.VarChar(50)
@@ -53,8 +53,9 @@ email String @unique
 telefono String?
 tipo_usuario Tipo_Usuario
 municipio Int
+estado Estado
 createAt DateTime @default(now())
-updateAt DateTime @updatedAt()
+updateAt DateTime @default(now())
 procedimiento Procedimiento[]
 eps Int
 Municipio_Usuario Municipio @relation(fields: [municipio], references: [id_municipio])
