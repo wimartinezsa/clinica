@@ -13,6 +13,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
 enum Tipo_Ident {
   AS
   CC
@@ -46,7 +47,7 @@ primer_nombre String @db.VarChar(50)
 segundo_nombre String? @db.VarChar(50)
 primer_apellido String @db.VarChar(50)
 segundo_apellido String? @db.VarChar(50)
-fecha_nacimiento DateTime
+fecha_nacimiento DateTime @db.Date
 sexo Sex
 email String @unique
 telefono String?
@@ -227,5 +228,3 @@ Contrato_Acuerdo Contrato @relation(fields: [contrato],references: [id_contrato]
 Tarifa_Acuerdo Tarifa @relation(fields: [tarifa],references: [id_tarifa])
 @@map("Acuerdos")
 }
-
-
