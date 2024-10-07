@@ -184,10 +184,6 @@ prestador Int
 
 
 
-
-
-
-
 model Examen{
 id_examen Int @id @default(autoincrement())
 nombre String @db.VarChar(50)
