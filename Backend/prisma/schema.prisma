@@ -92,17 +92,18 @@ procedimiento Procedimiento[]
 
 model Procedimiento{
 id_procedimiento Int @id @default(autoincrement())
-factura Int
 consecutivo Int
 fecha DateTime 
 edad_persona String @db.VarChar(20)
 resultado Resultado[]
 
+Procedimeinto_Contrato Contrato @relation(fields: [contrato], references: [id_contrato])
+contrato Int
+
 
 Tipo_Procedimiento_Procedimiento Tipo_Procedimiento @relation(fields: [tipo_procedimiento], references: [id_tipo_procedimiento])
 tipo_procedimiento Int
-Procedimiento_Tarifa Tarifa @relation(fields: [tarifa], references: [id_tarifa])
-tarifa Int
+
 Procedimiento_Usuario Usuario @relation(fields: [usuario], references: [id_usuario])
 usuario Int
 @@map("procedimientos")
@@ -111,19 +112,25 @@ usuario Int
 
 
 
+
+
 model Resultado{
 id_resultado Int @id @default(autoincrement())
 cantidad Int
-valor String @db.VarChar(50)
-fecha_muestra DateTime @db.Date
-resultado String @db.VarChar(50)
+fecha_muestra DateTime
+resultado String @db.VarChar(30)
 observacion String @db.VarChar(200)
+profesional Int
+
+precio Decimal @db.Decimal(10,2)
+
+Tarifa_Resultado Tarifa @relation(fields: [tarifa],references: [id_tarifa])
+tarifa Int
 
 Resultado_Procedimiento Procedimiento @relation(fields: [procedimiento], references: [id_procedimiento])
 procedimiento Int
 
-Procedimiento_Detalle_Detalle_Servicio Detalle_Servicio @relation(fields: [detalle_servicio], references: [id_detalle_servicio])
-detalle_servicio Int
+
 @@map("resultados")
 }
 
@@ -163,7 +170,8 @@ precio Decimal @db.Decimal(10,2)
 iva Decimal @db.Decimal(10,2)
 nivel Int
 
-detalle_servicio Detalle_Servicio[]
+
+
 tarifa Tarifa[]
 
 Servicio_Tipo_Servicio Tipo_Servicio @relation(fields: [tipo_servicio],references: [id_tipo_servicio])
@@ -176,18 +184,7 @@ prestador Int
 
 
 
-model Detalle_Servicio{
-id_detalle_servicio Int @id @default(autoincrement())
-estado Estado
-resultado Resultado[]
 
-Servicio_Setalle_Servicio Servicio @relation(fields: [servicio],references: [id_servicio])
-servicio Int
-Detalle_Servicio_Examen Examen @relation(fields: [examen],references: [id_examen])
-examen Int
-
-@@map("detalles_servicios")
-}
 
 
 
@@ -195,14 +192,15 @@ model Examen{
 id_examen Int @id @default(autoincrement())
 nombre String @db.VarChar(50)
 unidades  String @db.VarChar(30)
-valor_referencia  String @db.VarChar(30)
-resultado  String @db.VarChar(30)
+rango_biologico  String @db.VarChar(20)
+resultado  String @db.VarChar(20)
 tecnica  String @db.VarChar(30)
 precio Decimal @db.Decimal(10,2)
 estado Estado
 
-detalle_servicio Detalle_Servicio[]
+
 tipo_resultado Tipo_Resultado[]
+tarifa Tarifa[]
 
 examen_tipo_examen Tipo_Examen @relation(fields: [tipo_examen],references: [id_tipo_examen])
 tipo_examen Int
@@ -240,7 +238,7 @@ codigo BigInt
 razon_social String @db.VarChar(50)
 consecutivo Int
 servicio Servicio[]
-empleado Empleado[]
+profesional Profesional[]
 @@map("Prestadores")
 }
 
@@ -252,16 +250,17 @@ Bacteriologo
 }
 
 
-model Empleado{
-id_empleado Int @id @default(autoincrement())
+model Profesional{
+id_profesional Int @id @default(autoincrement())
 identificacion BigInt
 nombre String @db.VarChar(30)
 cargo String @db.VarChar(50)
 rol Rol
 password String @db.VarChar(20)
+
+Propefisonal_Presatador Prestador @relation(fields: [prestador],references: [id_prestador])
 prestador Int
-Pretador_Empleado Prestador @relation(fields: [prestador],references: [id_prestador])
-@@map("Empleados")
+@@map("profesionales")
 }
 
 
@@ -301,6 +300,9 @@ fecha_fin DateTime @db.Date
 estado Estado
 empresa Int
 tarifa Tarifa[]
+procedimiento  Procedimiento[]
+
+
 Contrato_Empresa Empresa @relation(fields: [empresa],references: [id_empresa])
 @@map("Contratos")
 }
@@ -309,13 +311,15 @@ Contrato_Empresa Empresa @relation(fields: [empresa],references: [id_empresa])
 model Tarifa{
 id_tarifa Int @id @default(autoincrement())
 estado Estado
-valor Decimal @db.Decimal(10,2)
+precio Decimal @db.Decimal(10,2)
+resultado Resultado[]
 
-procedimiento Procedimiento[]
+
+Tarifa_Examen Examen @relation(fields: [examen],references: [id_examen])
+examen Int
 
 Tarifa_Contrato Contrato @relation(fields: [contrato],references: [id_contrato])
 contrato Int
-
 
 Tarifa_Servicio Servicio @relation(fields: [servicio],references: [id_servicio])
 servicio Int
