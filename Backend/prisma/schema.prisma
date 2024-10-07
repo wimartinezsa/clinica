@@ -92,10 +92,12 @@ procedimiento Procedimiento[]
 
 model Procedimiento{
 id_procedimiento Int @id @default(autoincrement())
-consecutivo Int
+factura Int
 fecha DateTime 
 edad_persona String @db.VarChar(20)
-resultado Resultado[]
+createAt DateTime @default(now())
+updateAt DateTime @default(now())
+estudio Estudio[]
 
 Procedimeinto_Contrato Contrato @relation(fields: [contrato], references: [id_contrato])
 contrato Int
@@ -114,24 +116,26 @@ usuario Int
 
 
 
-model Resultado{
-id_resultado Int @id @default(autoincrement())
+model Estudio{
+id_estudio Int @id @default(autoincrement())
+consecutivo Int
 cantidad Int
 fecha_muestra DateTime
 resultado String @db.VarChar(30)
 observacion String @db.VarChar(200)
 profesional Int
-
+createAt DateTime @default(now())
+updateAt DateTime @default(now())
 precio Decimal @db.Decimal(10,2)
 
-Tarifa_Resultado Tarifa @relation(fields: [tarifa],references: [id_tarifa])
+Tarifa_Estudio Tarifa @relation(fields: [tarifa],references: [id_tarifa])
 tarifa Int
 
-Resultado_Procedimiento Procedimiento @relation(fields: [procedimiento], references: [id_procedimiento])
+Estudio_Procedimiento Procedimiento @relation(fields: [procedimiento], references: [id_procedimiento])
 procedimiento Int
 
 
-@@map("resultados")
+@@map("Estudios")
 }
 
 
@@ -251,7 +255,8 @@ identificacion BigInt
 nombre String @db.VarChar(30)
 cargo String @db.VarChar(50)
 rol Rol
-password String @db.VarChar(20)
+email String @db.VarChar(50)
+password String @db.VarChar(100)
 
 Propefisonal_Presatador Prestador @relation(fields: [prestador],references: [id_prestador])
 prestador Int
@@ -307,7 +312,9 @@ model Tarifa{
 id_tarifa Int @id @default(autoincrement())
 estado Estado
 precio Decimal @db.Decimal(10,2)
-resultado Resultado[]
+createAt DateTime @default(now())
+updateAt DateTime @default(now())
+estudio Estudio[]
 
 
 Tarifa_Examen Examen @relation(fields: [examen],references: [id_examen])
