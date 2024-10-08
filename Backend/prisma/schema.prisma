@@ -121,12 +121,10 @@ id_estudio Int @id @default(autoincrement())
 consecutivo Int
 cantidad Int
 fecha_muestra DateTime
+fecha_resultado DateTime
 resultado String @db.VarChar(30)
 observacion String @db.VarChar(200)
 profesional Int
-createAt DateTime @default(now())
-updateAt DateTime @default(now())
-precio Decimal @db.Decimal(10,2)
 
 Tarifa_Estudio Tarifa @relation(fields: [tarifa],references: [id_tarifa])
 tarifa Int
@@ -191,14 +189,13 @@ prestador Int
 model Examen{
 id_examen Int @id @default(autoincrement())
 nombre String @db.VarChar(50)
-
+unidades  String @db.VarChar(30)
+rango_biologico  String @db.VarChar(20)
+metodo  String @db.VarChar(30)
 precio Decimal @db.Decimal(10,2)
 estado Estado
-
-
 tipo_resultado Tipo_Resultado[]
 tarifa Tarifa[]
-
 examen_tipo_examen Tipo_Examen @relation(fields: [tipo_examen],references: [id_tipo_examen])
 tipo_examen Int
 
@@ -210,9 +207,6 @@ tipo_examen Int
 model Tipo_Resultado{
 id_tipo_resultado Int @id @default(autoincrement())
 nombre String @db.VarChar(50)
-unidades  String @db.VarChar(30)
-rango_biologico  String @db.VarChar(20)
-metodo  String @db.VarChar(30)
 estado Estado
 Tipo_Resultado_examen Examen @relation(fields: [examen],references: [id_examen])
 examen Int
@@ -234,8 +228,8 @@ estado Estado
 model Prestador{
 id_prestador Int @id @default(autoincrement())
 codigo BigInt
+nit String @db.VarChar(30)
 razon_social String @db.VarChar(50)
-consecutivo Int
 servicio Servicio[]
 profesional Profesional[]
 @@map("Prestadores")
@@ -257,7 +251,7 @@ cargo String @db.VarChar(50)
 rol Rol
 email String @db.VarChar(50)
 password String @db.VarChar(100)
-
+estado Estado
 Propefisonal_Presatador Prestador @relation(fields: [prestador],references: [id_prestador])
 prestador Int
 @@map("profesionales")
