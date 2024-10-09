@@ -4,7 +4,7 @@ import cors from "cors";
 
 import { swaggerUi, swaggerSetup }  from "./views/swagger.js"
 
-import usuario from './src/routes/route.usuario.js'
+import paciente from './src/routes/route.paciente.js'
 import tipo_servicio from './src/routes/route.tipo.servicio.js'
 import servicio from './src/routes/route.servicio.js'
 import empresa from './src/routes/route.empresa.js'
@@ -26,7 +26,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
-app.use(usuario);
+app.use(paciente);
 app.use(tipo_servicio);
 app.use(servicio);
 app.use(empresa);

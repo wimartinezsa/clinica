@@ -30,7 +30,7 @@ enum Sex {
 }
 
 
-enum Tipo_Usuario {
+enum Tipo_Paciente {
  Contributivo
  Subsidiado
  Vinculado
@@ -39,8 +39,8 @@ enum Tipo_Usuario {
 }
 
 
-model Usuario{
-id_usuario Int @id @default(autoincrement())
+model Paciente{
+id_paciente Int @id @default(autoincrement())
 tipo_identificacion Tipo_Ident
 identificacion BigInt @db.BigInt @unique
 primer_nombre String @db.VarChar(50)
@@ -52,7 +52,7 @@ sexo Sex
 email String @unique
 telefono String?
 direccion String? @db.VarChar(50)
-tipo_usuario Tipo_Usuario
+tipo_paciente Tipo_Paciente
 
 estado Estado @default(Activo)
 createAt DateTime @default(now())
@@ -66,7 +66,7 @@ eps Eps @relation(fields: [epsId],references: [id_eps])
 epsId Int
 
 
-@@map("usuarios")
+@@map("Pacientes")
 
 }
 
@@ -81,7 +81,7 @@ id_eps Int @id @default(autoincrement())
 codigo String @db.VarChar(20)
 nombre String @db.VarChar(50)
 estado Estado @default(Activo)
-usuario Usuario[]
+paciente Paciente[]
 @@map("eps")
 }
 
@@ -111,8 +111,8 @@ contratoId Int
 tipo_procedimiento Tipo_Procedimiento @relation(fields: [tipo_procedimientoId], references: [id_tipo_procedimiento])
 tipo_procedimientoId Int
 
-usuario Usuario @relation(fields: [usuarioId], references: [id_usuario])
-usuarioId Int
+paciente Paciente @relation(fields: [pacienteId], references: [id_paciente])
+pacienteId Int
 
 @@map("procedimientos")
 }
@@ -159,7 +159,7 @@ nombre String @db.VarChar(50)
 departamento  Departamento @relation(fields: [departamentoId], references: [id_departamento])
 departamentoId Int
 
-usuario Usuario[]
+paciente Paciente[]
 empresa Empresa[]
 
 @@map("Municipios")
@@ -238,7 +238,7 @@ codigo BigInt @db.BigInt
 nit String @db.VarChar(30)
 razon_social String @db.VarChar(50)
 servicio Servicio[]
-profesional Profesional[]
+usuario Usuario[]
 @@map("Prestadores")
 }
 
@@ -250,8 +250,8 @@ Bacteriologo
 }
 
 
-model Profesional{
-id_profesional Int @id @default(autoincrement())
+model Usuario{
+id_usuario Int @id @default(autoincrement())
 identificacion BigInt
 nombre String @db.VarChar(30)
 cargo String @db.VarChar(50)
@@ -262,7 +262,7 @@ estado Estado @default(Activo)
 
 presatador Prestador @relation(fields: [prestadorId],references: [id_prestador])
 prestadorId Int
-@@map("profesionales")
+@@map("usuarios")
 }
 
 
