@@ -12,6 +12,10 @@ import municipio from './src/routes/route.municipio.js'
 import departamento from './src/routes/route.departamento.js'
 import contrato from './src/routes/route.contrato.js'
 import prestador from './src/routes/route.prestador.js'
+import eps from './src/routes/route.eps.js'
+import tipo_examen from './src/routes/route.tipo_examen.js'
+
+import examen from './src/routes/route.examen.js'
 
 const app = express();
 const port = 3000;
@@ -29,6 +33,10 @@ app.use(municipio);
 app.use(departamento);
 app.use(contrato);
 app.use(prestador);
+app.use(eps);
+app.use(tipo_examen);
+app.use(examen);
+
 
 app.use('/api-docs', swaggerUi.serve,swaggerSetup);
 

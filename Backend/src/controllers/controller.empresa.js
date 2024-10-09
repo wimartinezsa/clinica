@@ -4,25 +4,48 @@ import prisma from '../libs/prisma.js'
 
 export  const listarEmpresas=async(req,resp)=>{
     try{
-        const empresas = await prisma.Empresa.findMany();
+        const empresas = await prisma.Empresa.findMany(
+            {
+                include:{
+                    municipio: true,
+                    municipio:{
+                        include:{
+                            departamento:true
+                        }
+                    }
+                    
+                }
+            }
+        );
         return resp.status(200).json(empresas);
     }catch(error){
         console.log("Error en controller.empresa.js :"+error);
+        resp.status(500).json({ error: 'Error al listar  las empresas' });
     }
 }
-
 
 export  const buscarEmpresaId=async(req,resp)=>{
     try{
         const id= await req.params.id_empresa;
         const empresa = await prisma.Empresa.findFirst(
             {
-                where: { id_empresa: Number(id) }
+                where: { id_empresa: Number(id) },
+                include:{
+                    municipio: true,
+                    municipio:{
+                        include:{
+                            departamento:true
+                        }
+                    }
+                    
+                }
+
             }
         );
         return resp.status(200).json(empresa);
     }catch(error){
         console.log("Error en controller.empresa.js :"+error);
+        resp.status(500).json({ error: 'Error al buscar  las empresas' });
     }
 }
 
@@ -38,13 +61,14 @@ export  const registrarEmpresa=async(req,resp)=>{
                     sigla:datos.sigla,
                     tipo:datos.tipo,
                     estado:datos.estado,
-                    municipio:datos.municipio
+                    municipioId:datos.municipioId
                 }
             } 
         );
         return resp.status(200).json({"status":200,"message":"La empresa se registro en el sistema"});
     }catch(error){
         console.log("Error en controller.empresa.js :"+error);
+        resp.status(500).json({ error: 'Error al registrar  la empresas' });
     }  
 }
 
@@ -69,7 +93,7 @@ export  const actualizarEmpresaId=async(req,resp)=>{
                             sigla:datos.sigla,
                             tipo:datos.tipo,
                             estado:datos.estado,
-                            municipio:datos.municipio
+                            municipioId:datos.municipioId
                     }
                 }  
             );
@@ -77,6 +101,7 @@ export  const actualizarEmpresaId=async(req,resp)=>{
           }
     }catch(error){
         console.log("Error en controller.empresa.js :"+error);
+        resp.status(500).json({ error: 'Error al actualizar  las empresas' });
     }  
 }
 
@@ -100,6 +125,7 @@ export  const desactivarEmpresaId=async(req,resp)=>{
         }
     }catch(error){
         console.log("Error en controller.empresa.js :"+error);
+        resp.status(500).json({ error: 'Error al desactivar  las empresas' });
     }  
 }
 

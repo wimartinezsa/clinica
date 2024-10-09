@@ -1,47 +1,63 @@
 
+import JSONbig from 'json-bigint';
 import prisma from '../libs/prisma.js'
 
 
 export  const listarServicios=async(req,resp)=>{
     try{
-        const servicios = await prisma.Servicio.findMany();
-        return resp.status(200).json(servicios);
+        const servicios = await prisma.Servicio.findMany(
+
+            { include: { 
+                prestador: true,
+                tipo_servicio:true          
+                }
+            }
+
+        );
+        return resp.status(200).send(JSONbig.stringify(servicios));
     }catch(error){
         console.log("Error en controller.servicio.js :"+error);
+        resp.status(500).json({ error: 'Error al listar los servicios' });
     }
 }
-
 
 export  const buscarServicioId=async(req,resp)=>{
     try{
         const id= await req.params.id_servicio;
         const servicios = await prisma.Servicio.findFirst(
             {
-                where: { id_servicio: Number(id) }
+                where: { id_servicio: Number(id) },
+                 include: { 
+                    prestador: true,
+                    tipo_servicio:true          
+                    }
+                
             }
         );
-        return resp.status(200).json(servicios);
+        return resp.status(200).send(JSONbig.stringify(servicios));
     }catch(error){
         console.log("Error en controller.servicio.js :"+error);
+        resp.status(500).json({ error: 'Error al buscar el servicio' });
     }
 }
 
 export  const registrarServicio=async(req,resp)=>{
     try{
         const datos= await req.body;
-        const servicio = await prisma.Servicio.create(
+        const servicio = await prisma.servicio.create(
             {
                 data: {
                     nombre:datos.nombre,
                     nivel:datos.nivel,
-                    prestador: datos.prestador,
-                    tipo_servicio:datos.tipo_servicio
+                    prestadorId: datos.prestadorId,
+                    tipo_servicioId:datos.tipo_servicioId
                 }
             } 
         );
         return resp.status(200).json({"status":200,"message":"Servicio registrado en el sistema"});
     }catch(error){
         console.log("Error en controller.Servicio.js :"+error);
+        resp.status(500).json({ error: 'Error al registrar el servicio' });
     }  
 }
 
@@ -62,8 +78,8 @@ export  const actualizarServicioId=async(req,resp)=>{
                     data:{
                             nombre:datos.nombre,
                             nivel:datos.nivel,
-                            prestador: datos.prestador,
-                            tipo_servicio:datos.tipo_servicio
+                            prestadorId: datos.prestadorId,
+                            tipo_servicioId:datos.tipo_servicioId
                     }
                 }  
             );
@@ -71,6 +87,7 @@ export  const actualizarServicioId=async(req,resp)=>{
           }
     }catch(error){
         console.log("Error en controller.servicio.js :"+error);
+        resp.status(500).json({ error: 'Error al actualizar el servicio' });
     }  
 }
 
@@ -97,6 +114,7 @@ export  const desactivarServicioId=async(req,resp)=>{
        
     }catch(error){
         console.log("Error en controller.tipo.servicio.js :"+error);
+        resp.status(500).json({ error: 'Error al desactivar el servico' });
     }  
 }
 

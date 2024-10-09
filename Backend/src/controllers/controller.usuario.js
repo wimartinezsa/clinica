@@ -4,10 +4,18 @@ import prisma from '../libs/prisma.js'
 
 export  const listarUsuarios=async(req,resp)=>{
     try{
-        const usuarios = await prisma.usuario.findMany();
+        const usuarios = await prisma.usuario.findMany(
+            {
+                include:{
+                    eps:true,
+                    municipio:true
+                }
+            }
+        );
         return resp.status(200).send(JSONbig.stringify(usuarios));
     }catch(error){
         console.log("Error en controller.usuario.js :"+error);
+        resp.status(500).json({ error: 'Error al listar los usuarios' });
     }
 }
 
@@ -16,12 +24,17 @@ export  const buscarUsuarioId=async(req,resp)=>{
         const id= await req.params.id_usuario;
         const usuarios = await prisma.usuario.findFirst(
             {
-                where: { id_usuario: Number(id) }
+                where: { id_usuario: Number(id) },
+                include:{
+                    eps:true,
+                    municipio:true
+                }
             }
         );
         return resp.status(200).send(JSONbig.stringify(usuarios));
     }catch(error){
         console.log("Error en controller.usuario.js :"+error);
+        resp.status(500).json({ error: 'Error al buscar el usuario' });
     }
 }
 
@@ -42,8 +55,8 @@ export  const registrarUsuario=async(req,resp)=>{
                     email: datos.email,
                     telefono:datos.telefono,
                     tipo_usuario: datos.tipo_usuario,
-                    municipio: datos.municipio,
-                    eps:datos.eps, 
+                    municipioId: datos.municipioId,
+                    epsId:datos.epsId, 
                     estado:datos.estado
 
                 }
@@ -52,6 +65,8 @@ export  const registrarUsuario=async(req,resp)=>{
         return resp.status(200).json({"status":200,"message":"Usuario registrado en el sistema"});
     }catch(error){
         console.log("Error en controller.usuario.js :"+error);
+        resp.status(500).json({ error: 'Error al registrar el usuario' });
+       
     }  
 }
 
@@ -82,8 +97,8 @@ export  const actualizarUsuarioId=async(req,resp)=>{
                                 email: datos.email,
                                 telefono:datos.telefono,
                                 tipo_usuario: datos.tipo_usuario,
-                                municipio: datos.municipio,
-                                eps:datos.eps,
+                                municipioId: datos.municipioId,
+                                epsId:datos.epsId,
                                 estado:datos.estado
                     }
                 }  
@@ -92,6 +107,7 @@ export  const actualizarUsuarioId=async(req,resp)=>{
           }
     }catch(error){
         console.log("Error en controller.usuario.js :"+error);
+        resp.status(500).json({ error: 'Error al actualizar el usuario' });
     }  
 }
 export  const desactivarUsuarioId=async(req,resp)=>{
@@ -117,6 +133,7 @@ export  const desactivarUsuarioId=async(req,resp)=>{
        
     }catch(error){
         console.log("Error en controller.usuario.js :"+error);
+        resp.status(500).json({ error: 'Error al desactivar el usuarios' });
     }  
 }
 

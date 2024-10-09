@@ -8,6 +8,7 @@ export  const listarTipoServicio=async(req,resp)=>{
         return resp.status(200).json(tipos_servicios);
     }catch(error){
         console.log("Error en controller.tipo.servicio.js :"+error);
+        resp.status(500).json({ error: 'Error al buscar el tipo de servicio' });
     }
 }
 
@@ -39,6 +40,7 @@ export  const registrarTipoServicio=async(req,resp)=>{
         return resp.status(200).json({"status":200,"message":"Tipo de Servicio registrado en el sistema"});
     }catch(error){
         console.log("Error en controller.Tipo_Servicio.js :"+error);
+        resp.status(500).json({ error: 'Error al buscar el tipo de servicio' });
     }  
 }
 
@@ -66,6 +68,7 @@ export  const actualizarTipoServicioId=async(req,resp)=>{
           }
     }catch(error){
         console.log("Error en controller.tipo.servicio.js :"+error);
+        resp.status(500).json({ error: 'Error al actualizar el tipo de servicio' });
     }  
 }
 export  const desactivarTipoServicioId=async(req,resp)=>{
@@ -91,6 +94,7 @@ export  const desactivarTipoServicioId=async(req,resp)=>{
        
     }catch(error){
         console.log("Error en controller.tipo.servicio.js :"+error);
+        resp.status(500).json({ error: 'Error al desactivar el tipo de servicio' });
     }  
 }
 

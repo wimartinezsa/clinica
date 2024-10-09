@@ -4,10 +4,23 @@ import prisma from '../libs/prisma.js'
 
 export  const listarContratos=async(req,resp)=>{
     try{
-        const contratos = await prisma.contrato.findMany();
+        const contratos = await prisma.contrato.findMany(
+            {
+                include:
+                 {
+                    empresa:true,
+                    empresa:{
+                        include:{
+                            municipio:true
+                        }
+                    }
+                 }
+            }
+        );
         return resp.status(200).json(contratos);
     }catch(error){
         console.log("Error en controller.contrato.js :"+error);
+        resp.status(500).json({ error: 'Error al listar el contrato' });
     }
 }
 
@@ -16,12 +29,23 @@ export  const buscarContratoId=async(req,resp)=>{
         const id= await req.params.id_contrato;
         const contratos = await prisma.contrato.findFirst(
             {
-                where: { id_contrato: Number(id) }
+                where: { id_contrato: Number(id) },
+                    include:
+                     {
+                        empresa:true,
+                        empresa:{
+                            include:{
+                                municipio:true
+                            }
+                        }
+                     }
+                
             }
         );
         return resp.status(200).json(contratos);
     }catch(error){
         console.log("Error en controller.contrato.js :"+error);
+        resp.status(500).json({ error: 'Error al buscar el contrato' });
     }
 }
 
@@ -34,13 +58,14 @@ export  const registrarContrato=async(req,resp)=>{
                     fecha_inicio:new Date(datos.fecha_inicio),
                     fecha_fin:new Date(datos.fecha_fin),
                     estado:datos.estado,
-                    empresa:datos.empresa
+                    empresaId:datos.empresaId
                 }
             } 
         );
         return resp.status(200).json({"status":200,"message":"Contrato registrado en el sistema"});
     }catch(error){
         console.log("Error en controller.contrato.js :"+error);
+        resp.status(500).json({ error: 'Error al registrar el contrato' });
     }  
 }
 
@@ -70,6 +95,7 @@ export  const actualizarContratoId=async(req,resp)=>{
           }
     }catch(error){
         console.log("Error en controller.contrato.js :"+error);
+        resp.status(500).json({ error: 'Error al actualizar el contrato' });
     }  
 }
 
@@ -97,6 +123,7 @@ export  const desactivarContratoId=async(req,resp)=>{
        
     }catch(error){
         console.log("Error en controller.contrato.js :"+error);
+        resp.status(500).json({ error: 'Error al desactivar el contrato' });
     }  
 }
 
