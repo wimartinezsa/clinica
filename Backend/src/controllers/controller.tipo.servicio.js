@@ -11,7 +11,7 @@ export  const listarTipoServicio=async(req,resp)=>{
     }
 }
 
-export  const buscarTipoServicio=async(req,resp)=>{
+export  const buscarTipoServicioId=async(req,resp)=>{
     try{
         const id= await req.params.id_tipo_servicio;
         const tipo_servicio = await prisma.Tipo_Servicio.findFirst(
@@ -42,7 +42,7 @@ export  const registrarTipoServicio=async(req,resp)=>{
     }  
 }
 
-export  const actualizarTipoServicio=async(req,resp)=>{
+export  const actualizarTipoServicioId=async(req,resp)=>{
     try{
         const datos= await req.body;
         const id= await req.params.id_tipo_servicio;
@@ -68,7 +68,7 @@ export  const actualizarTipoServicio=async(req,resp)=>{
         console.log("Error en controller.tipo.servicio.js :"+error);
     }  
 }
-export  const desactivarTipoServicio=async(req,resp)=>{
+export  const desactivarTipoServicioId=async(req,resp)=>{
     try{
         const id= await req.params.id_tipo_servicio
         const existencia = await prisma.Tipo_Servicio.findUnique({

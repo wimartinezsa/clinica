@@ -1,17 +1,17 @@
-
+import JSONbig from 'json-bigint';
 import prisma from '../libs/prisma.js'
 
 
-export  const listarUsuario=async(req,resp)=>{
+export  const listarUsuarios=async(req,resp)=>{
     try{
         const usuarios = await prisma.usuario.findMany();
-        return resp.status(200).json(usuarios);
+        return resp.status(200).send(JSONbig.stringify(usuarios));
     }catch(error){
         console.log("Error en controller.usuario.js :"+error);
     }
 }
 
-export  const buscarUsuario=async(req,resp)=>{
+export  const buscarUsuarioId=async(req,resp)=>{
     try{
         const id= await req.params.id_usuario;
         const usuarios = await prisma.usuario.findFirst(
@@ -19,7 +19,7 @@ export  const buscarUsuario=async(req,resp)=>{
                 where: { id_usuario: Number(id) }
             }
         );
-        return resp.status(200).json(usuarios);
+        return resp.status(200).send(JSONbig.stringify(usuarios));
     }catch(error){
         console.log("Error en controller.usuario.js :"+error);
     }
@@ -55,7 +55,7 @@ export  const registrarUsuario=async(req,resp)=>{
     }  
 }
 
-export  const actualizarUsuario=async(req,resp)=>{
+export  const actualizarUsuarioId=async(req,resp)=>{
     try{
         const datos= await req.body;
         const id= await req.params.id_usuario;
@@ -94,7 +94,7 @@ export  const actualizarUsuario=async(req,resp)=>{
         console.log("Error en controller.usuario.js :"+error);
     }  
 }
-export  const eliminarUsuario=async(req,resp)=>{
+export  const desactivarUsuarioId=async(req,resp)=>{
     try{
         const id= await req.params.id_usuario;
         const existencia = await prisma.usuario.findUnique({
