@@ -15,8 +15,9 @@ import prestador from './src/routes/route.prestador.js'
 import eps from './src/routes/route.eps.js'
 import tipo_examen from './src/routes/route.tipo_examen.js'
 import examen from './src/routes/route.examen.js'
-
 import tarifa from './src/routes/route.tarifa.js'
+
+import auth from './src/routes/route.auth.js'
 
 const app = express();
 const port = 3000;
@@ -38,8 +39,7 @@ app.use(eps);
 app.use(tipo_examen);
 app.use(examen);
 app.use(tarifa);
-
-
+app.use(auth);
 
 
 
