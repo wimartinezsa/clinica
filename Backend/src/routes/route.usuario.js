@@ -1,13 +1,13 @@
 import { Router } from "express";
 import {
-    loginUser,
+    validarUsuario,
     registrarUsuario
 } 
-        from "../controllers/controller.auth.js";
+        from "../controllers/controller.usuario.js";
 
 const route = Router();
 
-route.get('/login',loginUser);
+route.get('/login',validarUsuario);
 route.post('/usuario',registrarUsuario);
 
 
