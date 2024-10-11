@@ -1,5 +1,5 @@
 
-import JSONbig from 'json-bigint';
+
 import prisma from '../libs/prisma.js'
 
 
@@ -14,7 +14,7 @@ export  const listarServicios=async(req,resp)=>{
             }
 
         );
-        return resp.status(200).send(JSONbig.stringify(servicios));
+        return resp.status(200).json(servicios);
     }catch(error){
         console.log("Error en controller.servicio.js :"+error);
         resp.status(500).json({ error: 'Error al listar los servicios' });
@@ -34,7 +34,7 @@ export  const buscarServicioId=async(req,resp)=>{
                 
             }
         );
-        return resp.status(200).send(JSONbig.stringify(servicios));
+        return resp.status(200).json(servicios);
     }catch(error){
         console.log("Error en controller.servicio.js :"+error);
         resp.status(500).json({ error: 'Error al buscar el servicio' });

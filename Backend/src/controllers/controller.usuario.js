@@ -5,20 +5,15 @@ import jwt from 'jsonwebtoken';
 export  const validarUsuario=async(req,resp)=>{
     try {
         const { login, password } = req.body;
-/*
-        if (!email || !password) {
+
+        if (!login || !password) {
             return resp.status(400).json({"status":400,"message":"Es obligatorio un Usuario y un Password"});
-
         }
-*/
-
-
         const existenciaLogin = await prisma.usuario.findFirst(
             {where: { email: login }
         }
         );
      
- 
         if (!existenciaLogin) {
             return resp.status(403).json({"status":403,"message":"Usuario no autorizado"});
         }else{
@@ -41,16 +36,7 @@ export  const validarUsuario=async(req,resp)=>{
             }else{
                 return resp.status(403).json({"status":403,"message":"Usuario no autorizado"});
             }
-           
-           
-          
         }
-
-      
-      
-
-       
-
     } catch (error) {
         console.log("Error en controller.usuario.js :"+error);
         resp.status(500).json({ error: 'Error al validar usurio' });
@@ -85,7 +71,7 @@ export  const registrarUsuario=async(req,resp)=>{
             const encriptPassword = bcrypt.hashSync(String(password), 12)
             const usuario=await  prisma.usuario.create({
                 data: {
-                    identificacion:identificacion,
+                    identificacion:String(identificacion),
                     nombre: nombre,
                     email: email,
                     password: encriptPassword,
@@ -116,5 +102,50 @@ export  const registrarUsuario=async(req,resp)=>{
 }
 
 
+export  const actualizarUsuarioId=async(req,resp)=>{
+    try{
+        const datos= await req.body;
+        const id= await req.params.id_usuario;
+      
+
+        const existencia = await prisma.usuario.findUnique({
+            where: {id_usuario: Number(id)},
+          });
+          console.log(existencia);
+
+          if (!existencia) {
+            return resp.status(501).json({"status":200,"message":"El Usuario no existe en el sistema"});
+          }
+          else{
+           
+            const encriptPassword = bcrypt.hashSync(String(datos.identificacion), 12);
+         
+            const usuario = await prisma.usuario.update(
+                {
+                    where:{id_usuario:Number(id)},
+                    data:{
+                        identificacion:String(datos.identificacion),
+                        nombre: datos.nombre,
+                        email: datos.email,
+                        password: encriptPassword,
+                        rol: datos.rol,
+                        cargo:datos.cargo
+                    }
+                }  
+
+                
+
+
+            );
+            return resp.status(200).json({"status":200,"message":"Usuario actualizado en el sistema"});
+            
+          }
+
+          
+    }catch(error){
+        console.log("Error en controller.usuario.js :"+error);
+        resp.status(500).json({ error: 'Error al actualizar el Usuario' });
+    }  
+}
 
 

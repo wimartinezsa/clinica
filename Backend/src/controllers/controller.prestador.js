@@ -1,6 +1,6 @@
 
 
-import JSONbig from 'json-bigint';
+
 import prisma from '../libs/prisma.js'
 
 //JSONbig.storeAsString={ storeAsString: true };
@@ -17,7 +17,7 @@ export  const buscarPrestadorId=async(req,resp)=>{
         );
 
 
-    return resp.status(200).send(JSONbig.stringify(prestadores));
+    return resp.status(200).json(prestadores);
     
     }catch(error){
         console.log("Error en controller.id_prestador.js :"+error);

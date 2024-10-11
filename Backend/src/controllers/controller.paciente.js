@@ -1,4 +1,4 @@
-import JSONbig from 'json-bigint';
+
 import prisma from '../libs/prisma.js'
 
 
@@ -12,7 +12,7 @@ export  const listarPacientes=async(req,resp)=>{
                 }
             }
         );
-        return resp.status(200).send(JSONbig.stringify(paciente));
+        return resp.status(200).json(paciente);
     }catch(error){
         console.log("Error en controller.paciente.js :"+error);
         resp.status(500).json({ error: 'Error al listar los paciente' });
@@ -31,7 +31,7 @@ export  const buscarPacienteId=async(req,resp)=>{
                 }
             }
         );
-        return resp.status(200).send(JSONbig.stringify(paciente));
+        return resp.status(200).json(paciente);
     }catch(error){
         console.log("Error en controller.paciente.js :"+error);
         resp.status(500).json({ error: 'Error al buscar el paciente' });
@@ -45,7 +45,7 @@ export  const registrarPaciente=async(req,resp)=>{
             {
                 data: {
                     tipo_identificacion: datos.tipo_identificacion,
-                    identificacion: datos.identificacion,
+                    identificacion: String(datos.identificacion),
                     primer_nombre: datos.primer_nombre,
                     segundo_nombre: datos.segundo_nombre,
                     primer_apellido: datos.primer_apellido,
@@ -87,7 +87,7 @@ export  const actualizarPacienteId=async(req,resp)=>{
                     where:{id_paciente:Number(id)},
                     data:{
                                 tipo_identificacion: datos.tipo_identificacion,
-                                identificacion: datos.identificacion,
+                                identificacion: String(datos.identificacion),
                                 primer_nombre: datos.primer_nombre,
                                 segundo_nombre: datos.segundo_nombre,
                                 primer_apellido: datos.primer_apellido,
