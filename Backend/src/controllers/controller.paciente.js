@@ -3,16 +3,18 @@ import prisma from '../libs/prisma.js'
 
 
 export  const listarPacientes=async(req,resp)=>{
+
+
+
+
     try{
-        const paciente = await prisma.paciente.findMany(
-            {
-                include:{
-                    eps:true,
-                    municipio:true
-                }
-            }
-        );
-        return resp.status(200).json(paciente);
+
+        const pacientes = await prisma.$queryRaw`SELECT id_paciente,tipo_identificacion,identificacion,primer_nombre,segundo_nombre,primer_apellido,segundo_apellido,tipo_paciente,fecha_nacimiento,sexo,email,telefono,direccion,mu.nombre AS municipio,ep.nombre AS eps,ep.id_eps AS id_eps 
+        FROM pacientes pac
+        JOIN municipios mu ON mu.id_municipio = pac.municipioId
+        JOIN eps ep ON ep.id_eps = pac.epsId`;
+       
+        return resp.status(200).json(pacientes);
     }catch(error){
         console.log("Error en controller.paciente.js :"+error);
         resp.status(500).json({ error: 'Error al listar los paciente' });
@@ -41,6 +43,7 @@ export  const buscarPacienteId=async(req,resp)=>{
 export  const registrarPaciente=async(req,resp)=>{
     try{
         const datos= await req.body;
+        console.log(datos);
         const paciente = await prisma.paciente.create(
             {
                 data: {
@@ -55,14 +58,22 @@ export  const registrarPaciente=async(req,resp)=>{
                     email: datos.email,
                     telefono:datos.telefono,
                     tipo_paciente: datos.tipo_paciente,
-                    municipioId: datos.municipioId,
-                    epsId:datos.epsId, 
-                    estado:datos.estado
+                    estado:"Activo",
+                    municipio: {
+                        connect: {
+                          id_municipio: datos.municipioId // Suponiendo que el municipio con ID 1 ya existe
+                        }
+                      },
+                      eps: {
+                        connect: {
+                          id_eps: datos.epsId // Suponiendo que el municipio con ID 1 ya existe
+                        }
+                      }
 
                 }
             } 
         );
-        return resp.status(200).json({"status":200,"message":"paciente registrado en el sistema"});
+        return resp.status(200).json({"status":200,"message":"Paciente Registrado en el Sistema"});
     }catch(error){
         console.log("Error en controller.paciente.js :"+error);
         resp.status(500).json({ error: 'Error al registrar el paciente' });

@@ -22,7 +22,7 @@ import ButtonListarActividad from "../atoms/ButtonListarActividad.jsx";
 import ListActividad from "../molecules/Instructores/ListActividad.jsx";
 
 function TablePacientes() {
-  const [personas, setPersonas] = useState([]);
+  const [pacientes, setPacientes] = useState([]);
   const [filterValue, setFilterValue] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [sortDescriptor, setSortDescriptor] = useState({
@@ -36,27 +36,23 @@ function TablePacientes() {
 
   const fetchData = async () => {
     try {
-      const response = await axiosClient.get("/personas/listarI"); 
-      setPersonas(response.data);
+      const response = await axiosClient.get("/paciente"); 
+      setPacientes(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
-/*
+
   useEffect(() => {
     fetchData();
   }, [fetchData]);
-*/
+
   const handleOpenModal = (formType, data = null) => {
-    if (formType === "FormPaceintes") {
+    if (formType === "FormPacientes") {
       setBodyContent(
         <FormPacientes initialData={data} onSuccess={handleUpdateData} />
       );
-    } else if (formType === "ListActividades") {
-      setBodyContent(
-        <ListActividad selectedInstructor={data} onClose={handleCloseModal} />
-      );
-    }
+    } 
     setIsModalOpen(true);
   };
 
@@ -91,8 +87,8 @@ function TablePacientes() {
       try {
         const response = await axiosClient.post(`/personas/desactivar/${id_persona}`);
         Swal.fire("Desactivado", response.data.message, "success");
-          setPersonas((prevPersonas) =>
-          prevPersonas.filter((persona) => persona.id_persona !== id_persona)
+          setPacientes((prevPersonas) =>
+          prevPersonas.filter((pacientes) => persona.id_paciente !== id_persona)
         );
       } catch (error) {
         console.error("Error desactivando usuario:", error);
@@ -104,22 +100,27 @@ function TablePacientes() {
 
   const hasSearchFilter = Boolean(filterValue);
 
+  
   const filteredItems = useMemo(() => {
-    let filteredPersonas = personas;
+    let filteredPersonas = pacientes;
 
     if (hasSearchFilter) {
       filteredPersonas = filteredPersonas.filter((seg) =>
-        seg.nombres.toLowerCase().includes(filterValue.toLowerCase())
+        seg.primer_nombre.toLowerCase().includes(filterValue.toLowerCase())
       );
     }
 
     return filteredPersonas;
-  }, [personas, filterValue]);
+  }, [pacientes, filterValue]);
+
+
 
   const pages = useMemo(() => Math.ceil(filteredItems.length / rowsPerPage), [
     filteredItems.length,
     rowsPerPage,
   ]);
+
+  
 
   const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
@@ -142,37 +143,22 @@ function TablePacientes() {
       const cellValue = item[columnKey];
 
       switch (columnKey) {
-        case "area":
-          const area = areas.find((area) => area.id_area === item.area);
-          return area ? area.nombre_area : "";
+      
 
         case "acciones":
           return (
             <div className="flex justify-around items-center">
               <ButtonActualizar
-                onClick={() => handleOpenModal("FormPaceintes", item)}
+                onClick={() => handleOpenModal("FormPacientes", item)}
               />
               <ButtonDesactivar
                 onClick={() => handleDesactivar(item.id_persona)}
               />
-              <ButtonListarActividad
-                onClick={() => handleOpenModal("ListActividades", item)}
-              />
+             
             </div>
           );
 
-        case "nombres":
-          return (
-            <User
-              name={cellValue}
-              avatarSrc="https://via.placeholder.com/150"
-              bordered
-              as="button"
-              size="sm"
-              color="primary"
-            />
-          );
-
+        
         default:
           return cellValue;
       }
@@ -211,7 +197,7 @@ function TablePacientes() {
             />
             <div>
               <Button
-                onClick={() => handleOpenModal("FormPaceintes")}
+                onClick={() => handleOpenModal("FormPacientes")}
                 className="bg-[#0d324c] text-white"
               >
                 Registrar Paciente
@@ -221,7 +207,7 @@ function TablePacientes() {
         </div>
         <div className="flex items-center justify-between mt-2 mb-5">
           <span className="text-default-400 text-small mt-2">
-            Total {personas.length} usuarios
+            Total {pacientes.length} usuarios
           </span>
           <label className="flex items-center text-default-400 text-small">
             Rows per page:
@@ -240,22 +226,27 @@ function TablePacientes() {
     );
   }, [
     filterValue,
-    personas.length,
+    pacientes.length,
     onRowsPerPageChange,
     onClear,
     onSearchChange,
   ]);
 
   const columns = [
-    { key: "id_persona", label: "ID" },
-    { key: "identificacion", label: "Identificación" },
-    { key: "nombres", label: "Nombres" },
-    { key: "correo", label: "Correo" },
+    { key: "id_paciente", label: "ID" },
+    { key: "identificacion", label: "identificación" },
+    { key: "primer_nombre", label: "P. Nombre" },
+    { key: "segundo_nombre", label: "S. Nombre" },
+    { key: "primer_apellido", label: "P. Apellido" },
+    { key: "segundo_apellido", label: "S. Apellido" },
+    { key: "sexo", label: "Genero" },
+    { key: "email", label: "Correo" },
     { key: "telefono", label: "Teléfono" },
-    { key: "rol", label: "Rol" },
-    { key: "tipo", label: "Tipo" },
-    { key: "sede", label: "Sede" },
-    { key: "area", label: "Area" },
+    { key: "municipio", label: "municipio" },
+    { key: "eps", label: "eps" },
+   
+
+     
     { key: "acciones", label: "Acciones" },
   ];
 
@@ -264,7 +255,7 @@ function TablePacientes() {
       <div className="flex flex-col">
         {topContent}
         <Table
-          aria-labelledby="Tabla de Personas"
+          aria-labelledby="Tabla de Pacientes"
           css={{ height: "auto", minWidth: "100%" }}
         >
           <TableHeader>
@@ -274,7 +265,8 @@ function TablePacientes() {
           </TableHeader>
           <TableBody>
             {sortedItems.map((item) => (
-              <TableRow key={item.id_persona}>
+              
+              <TableRow key={item.id_paciente}>
                 {columns.map((column) => (
                   <TableCell key={column.key}>
                     {renderCell(item, column.key)}

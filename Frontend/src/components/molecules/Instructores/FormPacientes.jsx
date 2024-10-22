@@ -8,32 +8,30 @@ function FormPacientes({ initialData }) {
   const { registrarInstructor } = useContext(PersonasContext); // Usar el contexto
   const [eps, setEps] = useState([]);
   const [selectedEps, setSelectEps] = useState('');
-
-
-  
   const [tipo_identificacion, setTipo_identificacion] = useState("");
   const [identificacion, setIdentificacion] = useState("");
-
   const [primer_nombre, setPrimerNombre] = useState("");
   const [segundo_nombre, setSegundoNombre] = useState("");
   const [primer_apellido, setPrimerApellido] = useState("");
   const [segundo_apellido, setSegundoApellido] = useState("");
- 
-
   const [sexo, setSexo] = useState("");
+  const [correo, setCorreo] = useState("");
+  const [tipo_paciente, setTipo_Paciente] = useState("");
+  const [telefono, setTelefono] = useState("");
+
+  const [id_paciente, setId_Paciente] = useState(null);
+
+
   
 
-
-  const [correo, setCorreo] = useState("");
-
  
 
 
-  const [tipo, setTipo] = useState("Selecciona");
-  const [sede, setSede] = useState("Selecciona");
-  const [telefono, setTelefono] = useState("");
+
+
+  
   const [isEditing, setIsEditing] = useState(false);
-  const [idPersona, setIdPersona] = useState(null);
+ 
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
@@ -51,25 +49,38 @@ function FormPacientes({ initialData }) {
 
     fetchEps();
   }, []);
-/*
+
   useEffect(() => {
     if (initialData) {
+
+      setTipo_identificacion(initialData.tipo_identificacion || "");
       setIdentificacion(initialData.identificacion || "");
-      setNombres(initialData.nombres || "");
-      setCorreo(initialData.correo || "");
+      setPrimerNombre(initialData.primer_nombre || "");
+      setSegundoNombre(initialData.segundo_nombre || "");
+      setPrimerApellido(initialData.primer_apellido || "");
+      setSegundoApellido(initialData.segundo_apellido || "");
+      setCorreo(initialData.email || "");
+
       setTelefono(initialData.telefono || "");
-      //setRol(initialData.rol || "Selecciona");
-      //setSede(initialData.sede || "Selecciona"); // Establecer sede
-      //setTipo(initialData.tipo || "Selecciona"); // Establecer tipo
-      //setSelectArea(initialData.area || "Selecciona"); // Establecer area
-      //setIdPersona(initialData.id_persona); // Establecer el ID de la persona
+      
+      setTipo_Paciente(initialData.tipo_paciente || "");
+    
+      
+     setId_Paciente(initialData.id_paciente); // Establecer el ID del
+
+     setSexo(initialData.sexo); // Establecer el ID del
+      
+     setSelectEps(initialData.id_eps || "");
+
+     
+
       setIsEditing(true);
     } else {
       setIsEditing(false);
     }
   }, [initialData]);
 
-*/
+
 
 
   const handleSubmit = async (e) => {
@@ -147,9 +158,9 @@ function FormPacientes({ initialData }) {
       <div className='relative py-1'>
         <select
           name="tipo_identificacion"
-          value={sede}
-          onChange={(e) => setSede(e.target.value)}
-          className={`mt-4 h-14 rounded-xl bg-[#f4f4f5] p-2 ${errors.sede ? 'border-red-500' : ''}`}
+          value={tipo_identificacion}
+          onChange={(e) => setTipo_identificacion(e.target.value)}
+          className={`mt-4 h-14 rounded-xl bg-[#f4f4f5] p-2 ${errors.tipo_identificacion ? 'border-red-500' : ''}`}
           style={{ width: '385px' }}
         >
           <option value="Selecciona">Tipo de Identificación</option>
@@ -266,9 +277,9 @@ function FormPacientes({ initialData }) {
         <div className='relative py-1'>
         <select
           name="sexo"
-          value={sede}
-          onChange={(e) => setSede(e.target.value)}
-          className={`mt-4 h-14 rounded-xl bg-[#f4f4f5] p-2 ${errors.sede ? 'border-red-500' : ''}`}
+          value={sexo}
+          onChange={(e) => setSexo(e.target.value)}
+          className={`mt-4 h-14 rounded-xl bg-[#f4f4f5] p-2 ${errors.sexo ? 'border-red-500' : ''}`}
           style={{ width: '385px' }}
         >
           <option value="" disabled='false'>Seleccione un opción</option>
@@ -317,9 +328,9 @@ function FormPacientes({ initialData }) {
 
         <select
           name="tipo_paciente"
-          value={tipo}
-          onChange={(e) => setTipo(e.target.value)}
-          className={`mt-4 h-14 rounded-xl bg-[#f4f4f5] p-2 ${errors.tipo ? 'border-red-500' : ''}`}
+          value={tipo_paciente}
+          onChange={(e) => setTipo_Paciente(e.target.value)}
+          className={`mt-4 h-14 rounded-xl bg-[#f4f4f5] p-2 ${errors.tipo_paciente ? 'border-red-500' : ''}`}
           style={{ width: '385px' }}
         >
           <option value="Selecciona">Selecciona un Tipo de Paciente</option>
@@ -328,12 +339,12 @@ function FormPacientes({ initialData }) {
           <option value="Particular">Particular</option>
           <option value="Otro">Otro</option>
         </select>
-        {errors.tipo && <p className="text-red-500">{errors.tipo}</p>}
+        {errors.tipo_paciente && <p className="text-red-500">{errors.tipo_paciente}</p>}
 
         
 
         <select
-          className="mt-4 h-14 rounded-xl bg-[#f4f4f5] p-2 ${errors.sede ? 'border-red-500' : ''}"
+          className="mt-4 h-14 rounded-xl bg-[#f4f4f5] p-2 ${errors.eps ? 'border-red-500' : ''}"
           id="eps"
           name="eps"
           value={selectedEps}
