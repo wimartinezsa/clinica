@@ -43,10 +43,8 @@ model Paciente{
 id_paciente Int @id @default(autoincrement())
 tipo_identificacion Tipo_Ident
 identificacion String @db.VarChar(30)  @unique
-primer_nombre String @db.VarChar(50)
-segundo_nombre String? @db.VarChar(50)
-primer_apellido String @db.VarChar(50)
-segundo_apellido String? @db.VarChar(50)
+nombres String @db.VarChar(50)
+
 fecha_nacimiento DateTime @db.Date
 sexo Sex
 email String @unique
@@ -105,8 +103,8 @@ createAt DateTime @default(now())
 updateAt DateTime @default(now())
 estudio Estudio[]
 
-contrato Contrato @relation(fields: [contratoId], references: [id_contrato])
-contratoId Int
+tarifa Tarifa @relation(fields: [tarifaId], references: [id_tarifa])
+tarifaId Int
 
 tipo_procedimiento Tipo_Procedimiento @relation(fields: [tipo_procedimientoId], references: [id_tipo_procedimiento])
 tipo_procedimientoId Int
@@ -132,11 +130,14 @@ resultado String @db.VarChar(30)
 observacion String @db.VarChar(200)
 profesional Int
 
-tarifa Tarifa @relation(fields: [tarifaId],references: [id_tarifa])
-tarifaId Int
+paquete Paquete @relation(fields: [paqueteId],references: [id_paquete])
+paqueteId Int
 
 procedimiento Procedimiento @relation(fields: [procedimientoId], references: [id_procedimiento])
 procedimientoId Int
+
+
+
 
 
 @@map("Estudios")
@@ -178,8 +179,12 @@ model Servicio{
 id_servicio Int @id @default(autoincrement())
 nombre String @db.VarChar(50)
 nivel Int
+precio Decimal @db.Decimal(10,2)
 estado Estado @default(Activo)
+
+paquete Paquete[]
 tarifa Tarifa[]
+
 
 tipo_servicio Tipo_Servicio @relation(fields: [tipo_servicioId],references: [id_tipo_servicio])
 tipo_servicioId Int
@@ -204,7 +209,8 @@ tipo_examen Tipo_Examen @relation(fields: [tipo_examenId],references: [id_tipo_e
 tipo_examenId Int
 
 tipo_resultado Tipo_Resultado[]
-tarifa Tarifa[]
+
+paquete Paquete[]
 
 @@map("examenes")
 }
@@ -239,6 +245,7 @@ nit String @db.VarChar(30)
 razon_social String @db.VarChar(50)
 servicio Servicio[]
 usuario Usuario[]
+
 @@map("Prestadores")
 }
 
@@ -260,8 +267,8 @@ email String @db.VarChar(50)
 password String @db.VarChar(100)
 estado Estado @default(Activo)
 
- prestador Prestador[]
-
+prestador Prestador @relation(fields: [prestadorId],references: [id_prestador])
+prestadorId Int
 
 @@map("usuarios")
 }
@@ -309,7 +316,7 @@ empresa Empresa @relation(fields: [empresaId],references: [id_empresa])
 empresaId Int
 
 tarifa Tarifa[]
-procedimiento  Procedimiento[]
+
 
 @@map("Contratos")
 }
@@ -323,16 +330,34 @@ iva Decimal @db.Decimal(10,2)
 createAt DateTime @default(now())
 updateAt DateTime @default(now())
 
-
-examen Examen @relation(fields: [examenId],references: [id_examen])
-examenId Int
+procedimiento Procedimiento[]
 
 contrato Contrato @relation(fields: [contratoId],references: [id_contrato])
 contratoId Int
 
+
 servicio Servicio @relation(fields: [servicioId],references: [id_servicio])
 servicioId Int
 
-estudio Estudio[]
 @@map("Tarifas")
+}
+
+
+
+model Paquete{
+id_paquete Int @id @default(autoincrement())
+estado Estado @default(Activo)
+
+estudio Estudio[]
+
+
+examen Examen @relation(fields: [examenId],references: [id_examen])
+examenId Int
+
+servicio Servicio @relation(fields: [servicioId],references: [id_servicio])
+servicioId Int
+
+
+
+@@map("Paquetes")
 }

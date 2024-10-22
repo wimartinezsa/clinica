@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-
+import body_parser from 'body-parser'
 
 import { swaggerUi, swaggerSetup }  from "./views/swagger.js"
 
@@ -22,9 +22,10 @@ import usuario from './src/routes/route.usuario.js'
 const app = express();
 const port = 3000;
 
+
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(body_parser.json())
+app.use(body_parser.urlencoded({ extended: false }))
 
 
 app.use(paciente);
