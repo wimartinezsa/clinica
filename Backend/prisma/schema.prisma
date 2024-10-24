@@ -116,8 +116,8 @@ createAt DateTime @default(now())
 updateAt DateTime @default(now())
 estudio Estudio[]
 
-tarifa Tarifa @relation(fields: [tarifaId], references: [id_tarifa])
-tarifaId Int
+acuerdo Acuerdo @relation(fields: [acuerdoId], references: [id_acuerdo])
+acuerdoId Int
 
 tipo_procedimiento Tipo_Procedimiento @relation(fields: [tipo_procedimientoId], references: [id_tipo_procedimiento])
 tipo_procedimientoId Int
@@ -196,7 +196,7 @@ precio Decimal @db.Decimal(10,2)
 estado Estado @default(Activo)
 
 paquete Paquete[]
-tarifa Tarifa[]
+acuerdo Acuerdo[]
 
 
 tipo_servicio Tipo_Servicio @relation(fields: [tipo_servicioId],references: [id_tipo_servicio])
@@ -328,15 +328,15 @@ estado Estado @default(Activo)
 empresa Empresa @relation(fields: [empresaId],references: [id_empresa])
 empresaId Int
 
-tarifa Tarifa[]
+acuerdo Acuerdo[]
 
 
 @@map("Contratos")
 }
 
 
-model Tarifa{
-id_tarifa Int @id @default(autoincrement())
+model Acuerdo{
+id_acuerdo Int @id @default(autoincrement())
 estado Estado @default(Activo)
 precio Decimal @db.Decimal(10,2)
 iva Decimal @db.Decimal(10,2)
@@ -352,7 +352,7 @@ contratoId Int
 servicio Servicio @relation(fields: [servicioId],references: [id_servicio])
 servicioId Int
 
-@@map("Tarifas")
+@@map("Acuerdos")
 }
 
 

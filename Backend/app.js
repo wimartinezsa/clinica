@@ -2,6 +2,10 @@ import express from "express";
 import cors from "cors";
 import body_parser from 'body-parser'
 
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+
 import { swaggerUi, swaggerSetup }  from "./views/swagger.js"
 
 import paciente from './src/routes/route.paciente.js'
@@ -15,15 +19,18 @@ import prestador from './src/routes/route.prestador.js'
 import eps from './src/routes/route.eps.js'
 import tipo_examen from './src/routes/route.tipo_examen.js'
 import examen from './src/routes/route.examen.js'
-import tarifa from './src/routes/route.tarifa.js'
+import acuerdo from './src/routes/route.acuerdo.js'
 
 import usuario from './src/routes/route.usuario.js'
+
 
 const app = express();
 const port = 3000;
 
-
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 app.use(cors());
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(body_parser.json())
 app.use(body_parser.urlencoded({ extended: false }))
 
@@ -39,13 +46,16 @@ app.use(prestador);
 app.use(eps);
 app.use(tipo_examen);
 app.use(examen);
-app.use(tarifa);
+app.use(acuerdo);
 app.use(usuario);
 
 
 
 
 app.use('/api-docs', swaggerUi.serve,swaggerSetup);
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  });
 
 app.listen(port, () => {
     console.log("Listening on port ", port);

@@ -4,20 +4,22 @@ import prisma from '../libs/prisma.js'
 
 export  const listarContratos=async(req,resp)=>{
     try{
-        const contratos = await prisma.contrato.findMany(
-            {
-                include:
-                 {
-                    empresa:true,
-                    empresa:{
-                        include:{
-                            municipio:true
-                        }
-                    }
-                 }
-            }
-        );
+       
+        const contratos = await prisma.$queryRaw`SELECT 
+        co.id_contrato,
+        co.fecha_inicio,
+        co.fecha_fin,
+        co.estado,
+        em.nombre as empresa,
+        em.sigla,
+        mp.nombre as municipio
+
+        FROM contratos co 
+        join empresas em on id_empresa=empresaId
+        join municipios mp on mp.id_municipio=municipioId
+        `;
         return resp.status(200).json(contratos);
+      
     }catch(error){
         console.log("Error en controller.contrato.js :"+error);
         resp.status(500).json({ error: 'Error al listar el contrato' });

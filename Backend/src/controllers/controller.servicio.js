@@ -5,16 +5,22 @@ import prisma from '../libs/prisma.js'
 
 export  const listarServicios=async(req,resp)=>{
     try{
-        const servicios = await prisma.Servicio.findMany(
+        const pacientes = await prisma.$queryRaw`SELECT 
+        s.id_servicio,
+        s.nombre,
+        s.nivel,
+        s.precio,
+        s.estado,
+        p.razon_social as prestador,
+        ts.nombre as tipo_servicio
+        FROM servicios s
+        join prestadores p on p.id_prestador = s.prestadorId
+        join tipos_servicios ts on ts.id_tipo_servicio= s.tipo_servicioId
+        `;
+       
+        return resp.status(200).json(pacientes);
 
-            { include: { 
-                prestador: true,
-                tipo_servicio:true          
-                }
-            }
-
-        );
-        return resp.status(200).json(servicios);
+       
     }catch(error){
         console.log("Error en controller.servicio.js :"+error);
         resp.status(500).json({ error: 'Error al listar los servicios' });
@@ -50,7 +56,8 @@ export  const registrarServicio=async(req,resp)=>{
                     nombre:datos.nombre,
                     nivel:datos.nivel,
                     prestadorId: datos.prestadorId,
-                    tipo_servicioId:datos.tipo_servicioId
+                    tipo_servicioId:datos.tipo_servicioId,
+                    precio: parseFloat(datos.precio)
                 }
             } 
         );
