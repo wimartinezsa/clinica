@@ -24,12 +24,13 @@ function EtapaPracticaPage() {
         <>
             <div className="flex min-h-screen flex-col m-10">
                 <Tabs aria-label="Options">
-                    <Tab key="instructor" title="Empresas">
-                        <TableEmpresas />
-                    </Tab>
-                    <Tab key= "instrutor" title="Etapa Practica">
+                <Tab key= "servicios" title="Servicios">
                         <TableProductiva />
                     </Tab>
+                    <Tab key="examenes" title="Tipos de Examenes">
+                        <TableEmpresas />
+                    </Tab>
+                    
                 </Tabs>
             </div>
         </>

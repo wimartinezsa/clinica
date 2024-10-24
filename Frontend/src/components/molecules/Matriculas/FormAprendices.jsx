@@ -2,10 +2,10 @@ import React, { useState, useEffect, useContext } from "react";
 import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import Swal from 'sweetalert2';
 import axiosClient from "../../../configs/axiosClient";
-import PersonasContext from "../../../context/PersonasContext";
+import PacientesContext from "../../../context/PacientesContext";
 
 function FormAprendices({ initialData }) {
-  const { registrarAprendiz } = useContext(PersonasContext);
+  const { registrarAprendiz } = useContext(PacientesContext);
   const [identificacion, setIdentificacion] = useState("");
   const [nombres, setNombres] = useState("");
   const [correo, setCorreo] = useState("");

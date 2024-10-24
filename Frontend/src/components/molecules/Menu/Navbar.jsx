@@ -23,7 +23,7 @@ export const Navbar2 = ({ title }) => {
         <NavbarContent className="flex justify-between items-center px-4">
           <NavbarBrand>
             <p className="font-bold text-base sm:text-xl text-gray-800 dark:text-white">
-              Examenes Médicos
+              LABORATORIO CLINICO
             </p>
           </NavbarBrand>
           <div className="flex items-center">

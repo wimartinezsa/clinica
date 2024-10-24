@@ -10,15 +10,14 @@ function FichasPage() {
     <>
       <div className="flex min-h-screen flex-col m-10">
         <Tabs aria-label="Options">
-          <Tab key="programas" title="Programas">
-            <TableProgramas />
-          </Tab>
-          <Tab key="fichas" title="Fichas">
-            <TableFichas />
-          </Tab>
-          <Tab key="ambientes" title="Ambientes">
+          
+        <Tab key="usuarios" title="Usuarios del Sistema">
             <TableAmbiente />
           </Tab>
+          <Tab key="eps" title="Eps">
+            <TableProgramas />
+          </Tab>
+          
           <Tab key="horarios" title="Horarios">
             <TableHorarios />
           </Tab>

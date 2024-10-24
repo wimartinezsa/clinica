@@ -18,8 +18,8 @@ import {
 import { SearchIcon } from "../NextIU/atoms/searchicons.jsx";
 import ButtonActualizar from "../atoms/ButtonActualizar.jsx";
 import ButtonDesactivar from "../atoms/ButtonDesactivar.jsx";
-import ButtonListarActividad from "../atoms/ButtonListarActividad.jsx";
-import ListActividad from "../molecules/Instructores/ListActividad.jsx";
+
+
 
 function TablePacientes() {
   const [pacientes, setPacientes] = useState([]);
@@ -45,7 +45,7 @@ function TablePacientes() {
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+  },[]);
 
   const handleOpenModal = (formType, data = null) => {
     if (formType === "FormPacientes") {
@@ -68,7 +68,8 @@ function TablePacientes() {
 
  
 
-  const handleDesactivar = async (id_persona) => {
+  const handleDesactivar = async (id_paciente) => {
+    
     const result = await Swal.fire({
       title: "¿Estás seguro?",
       text: "¿Quieres desactivar este usuario?",
@@ -85,14 +86,17 @@ function TablePacientes() {
   
     if (result.isConfirmed) {
       try {
-        const response = await axiosClient.post(`/personas/desactivar/${id_persona}`);
+        const response = await axiosClient.delete(`/paciente/${id_paciente}`);
+        fetchData();
         Swal.fire("Desactivado", response.data.message, "success");
+       
           setPacientes((prevPersonas) =>
-          prevPersonas.filter((pacientes) => persona.id_paciente !== id_persona)
+          prevPersonas.filter((pacientes) => pacientes.id_paciente !== id_paciente)
         );
+      
       } catch (error) {
-        console.error("Error desactivando usuario:", error);
-        Swal.fire("Error", "No se pudo desactivar el usuario", "error");
+        console.error("Error desactivando el paciente:", error);
+        Swal.fire("Error", "No se pudo desactivar el paciente", "error");
       }
     }
   };
@@ -152,9 +156,8 @@ function TablePacientes() {
                 onClick={() => handleOpenModal("FormPacientes", item)}
               />
               <ButtonDesactivar
-                onClick={() => handleDesactivar(item.id_persona)}
+                onClick={() => handleDesactivar(item.id_paciente)}
               />
-             
             </div>
           );
 
@@ -207,7 +210,7 @@ function TablePacientes() {
         </div>
         <div className="flex items-center justify-between mt-2 mb-5">
           <span className="text-default-400 text-small mt-2">
-            Total {pacientes.length} usuarios
+            Total {pacientes.length} pacientes
           </span>
           <label className="flex items-center text-default-400 text-small">
             Rows per page:

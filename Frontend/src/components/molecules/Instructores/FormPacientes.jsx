@@ -1,11 +1,15 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Button, Input } from "@nextui-org/react";
-import PersonasContext from "../../../context/PersonasContext"; // Importar el contexto
+import PacientesContext from "../../../context/PacientesContext"; // Importar el contexto
 import Swal from 'sweetalert2'; // Importar SweetAlert2
 import axiosClient from "../../../configs/axiosClient";
 
 function FormPacientes({ initialData }) {
-  const { registrarInstructor } = useContext(PersonasContext); // Usar el contexto
+  const { registrarPaciente } = useContext(PacientesContext); // Usar el contexto
+  //const { registrarPaciente } = useContext(PacientesContext); // Usar el contexto
+
+
+
   const [eps, setEps] = useState([]);
   const [selectedEps, setSelectEps] = useState('');
   const [tipo_identificacion, setTipo_identificacion] = useState("");
@@ -14,10 +18,14 @@ function FormPacientes({ initialData }) {
   const [segundo_nombre, setSegundoNombre] = useState("");
   const [primer_apellido, setPrimerApellido] = useState("");
   const [segundo_apellido, setSegundoApellido] = useState("");
+  const [fecha_nacimiento, setSetFechaNacimiento] = useState("");
   const [sexo, setSexo] = useState("");
-  const [correo, setCorreo] = useState("");
+  const [email, setEmail] = useState("");
   const [tipo_paciente, setTipo_Paciente] = useState("");
   const [telefono, setTelefono] = useState("");
+
+  const [municipio, setMunicipio] = useState([]);
+  const [selectedMunicipio, setSelectMunicipio] = useState('');
 
   const [id_paciente, setId_Paciente] = useState(null);
 
@@ -34,9 +42,13 @@ function FormPacientes({ initialData }) {
  
   const [errors, setErrors] = useState({});
 
+
+
+  
+
+ 
   useEffect(() => {
-    
-    const fetchEps = async () => {
+    const listarEps = async () => {
       try {
         const response = await axiosClient.get('/eps');
         //console.log(response);
@@ -46,41 +58,56 @@ function FormPacientes({ initialData }) {
         setErrorMessage("Error al cargar eps. Intenta de nuevo más tarde.");
       }
     };
-
-    fetchEps();
+  
+  
+    const listarMunicipio = async () => {
+      try {
+        const response = await axiosClient.get('/municipio');
+        setMunicipio(response.data);
+        
+      } catch (error) {
+        console.error("Error al cargar municipios:", error);
+        setErrorMessage("Error al cargar municipios. Intenta de nuevo más tarde.");
+      }
+    };
+  
+    listarEps();
+    listarMunicipio();
   }, []);
 
-  useEffect(() => {
-    if (initialData) {
 
+
+
+  useEffect(() => {
+
+    if (initialData) {
+     
+      setId_Paciente(initialData.id_paciente);
       setTipo_identificacion(initialData.tipo_identificacion || "");
       setIdentificacion(initialData.identificacion || "");
       setPrimerNombre(initialData.primer_nombre || "");
       setSegundoNombre(initialData.segundo_nombre || "");
       setPrimerApellido(initialData.primer_apellido || "");
       setSegundoApellido(initialData.segundo_apellido || "");
-      setCorreo(initialData.email || "");
-
+      setEmail(initialData.email || "");
       setTelefono(initialData.telefono || "");
-      
       setTipo_Paciente(initialData.tipo_paciente || "");
-    
+      setId_Paciente(initialData.id_paciente); // Establecer el ID del
+      setSexo(initialData.sexo); // Establecer el ID del
+
+      const date = new Date(initialData.fecha_nacimiento);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0'); // Los meses en JavaScript van de 0 a 11
+      const day = String(date.getDate()).padStart(2, '0');
+      setSetFechaNacimiento(`${year}-${month}-${day}`); 
       
-     setId_Paciente(initialData.id_paciente); // Establecer el ID del
-
-     setSexo(initialData.sexo); // Establecer el ID del
-      
-     setSelectEps(initialData.id_eps || "");
-
-     
-
+      setSelectEps(initialData.id_eps || "");
+      setSelectMunicipio(initialData.id_municipio || "");
       setIsEditing(true);
     } else {
       setIsEditing(false);
     }
   }, [initialData]);
-
-
 
 
   const handleSubmit = async (e) => {
@@ -90,24 +117,30 @@ function FormPacientes({ initialData }) {
     setErrors({});
 
     const formData = {
+      tipo_identificacion,
       identificacion,
       primer_nombre,
       segundo_nombre,
       primer_apellido,
       segundo_apellido,
-      correo,
+      sexo,
+      fecha_nacimiento,
+      email,
       telefono,
-      eps: selectedEps
+      tipo_paciente,
+      epsId: selectedEps,
+      municipioId: selectedMunicipio
     };
-    console.log(formData);
+  
 
-/*     console.log("Campos enviados:", formData);
- */
+    ///console.log("Campos enviados:", formData);
+ 
 
     try {
       if (isEditing) {
         // Actualizar el usuario
-        await axiosClient.put(`/paciente/${idPersona}`, formData);
+        console.log(formData);
+        await axiosClient.put(`/paciente/${id_paciente}`, formData);
         Swal.fire({
           icon: 'success',
           title: 'Éxito',
@@ -115,7 +148,7 @@ function FormPacientes({ initialData }) {
         });
       } else {
         // Registrar un nuevo usuario
-        await registrarInstructor(formData);
+        await registrarPaciente(formData);
         Swal.fire({
           icon: 'success',
           title: 'Éxito',
@@ -151,7 +184,7 @@ function FormPacientes({ initialData }) {
   return (
     <div>
       <h1 className="text-xl font-bold mb-1">
-        {isEditing ? "Actualizar Instructor" : "Registro de Pacientes"}
+        {isEditing ? "Actualizar Paciente" : "Registro de Pacientes"}
       </h1>
       <form onSubmit={handleSubmit} className="flex flex-col">
         
@@ -271,7 +304,20 @@ function FormPacientes({ initialData }) {
         </div>
 
 
-
+        <div className='relative py-1'>
+          <Input
+            type="date"
+            label='Fecha de Namiento'
+            id='fecha_nacimiento'
+            name="fecha_nacimiento"
+            className="w-96"
+            value={fecha_nacimiento}
+            onChange={(e) => setSetFechaNacimiento(e.target.value)}
+            required
+            helperText={errors.fecha_nacimiento} // Mostrar error si existe
+            status={errors.fecha_nacimiento ? 'error' : 'default'}
+          />
+        </div>
 
        
         <div className='relative py-1'>
@@ -282,7 +328,7 @@ function FormPacientes({ initialData }) {
           className={`mt-4 h-14 rounded-xl bg-[#f4f4f5] p-2 ${errors.sexo ? 'border-red-500' : ''}`}
           style={{ width: '385px' }}
         >
-          <option value="" disabled='false'>Seleccione un opción</option>
+          <option value="" disabled={true} >Seleccione el genero</option>
           <option value="Femenino">Femenino</option>
           <option value="Masculino">Masculino</option>
           <option value="Indeterminado">Indeterminado</option>
@@ -299,16 +345,18 @@ function FormPacientes({ initialData }) {
           <Input
             type="email"
             label='Correo Electrónico'
-            id='correo'
-            name="correo"
+            id='email'
+            name="email"
             className="w-96"
-            value={correo}
-            onChange={(e) => setCorreo(e.target.value)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
-            helperText={errors.correo} // Mostrar error si existe
-            status={errors.correo ? 'error' : 'default'}
+            helperText={errors.email} // Mostrar error si existe
+            status={errors.email ? 'error' : 'default'}
           />
         </div>
+
+
         <div className='relative py-1'>
           <Input
             type="number"
@@ -333,7 +381,8 @@ function FormPacientes({ initialData }) {
           className={`mt-4 h-14 rounded-xl bg-[#f4f4f5] p-2 ${errors.tipo_paciente ? 'border-red-500' : ''}`}
           style={{ width: '385px' }}
         >
-          <option value="Selecciona">Selecciona un Tipo de Paciente</option>
+
+          <option value="Selecciona" disabled={true} >Selecciona un Tipo de Paciente</option>
           <option value="Subsidiado">Subsidiado</option>
           <option value="Vinculado">Vinculado</option>
           <option value="Particular">Particular</option>
@@ -341,7 +390,30 @@ function FormPacientes({ initialData }) {
         </select>
         {errors.tipo_paciente && <p className="text-red-500">{errors.tipo_paciente}</p>}
 
+
         
+        <select
+          className="mt-4 h-14 rounded-xl bg-[#f4f4f5] p-2 ${errors.eps ? 'border-red-500' : ''}"
+          id="municipio"
+          name="municipio"
+          value={selectedMunicipio}
+          onChange={(e) =>{ 
+            setSelectMunicipio(e.target.value)
+          }
+          }
+          required
+        >
+          
+          <option value="" disabled={true} >Seleccione un Municipio</option>
+          { municipio.map((option) => (
+            <option key={option.id_municipio} value={option.id_municipio}> {option.nombre }</option>
+          ))
+          
+          }
+         
+          
+        </select>
+
 
         <select
           className="mt-4 h-14 rounded-xl bg-[#f4f4f5] p-2 ${errors.eps ? 'border-red-500' : ''}"
@@ -350,25 +422,28 @@ function FormPacientes({ initialData }) {
           value={selectedEps}
           onChange={(e) =>{ 
             setSelectEps(e.target.value)
-
- 
           }
           }
           required
         >
-          <option value="">Selecciona una Eps</option>
-          
+         
+        
+          <option value="" disabled={true} >Selecciona una Eps</option>
           { eps.map((option) => (
             <option key={option.id_eps} value={option.id_eps}> {option.nombre }</option>
           ))
           
           }
         </select>
+
+
+
         <div className="flex justify-end gap-5 mt-5">
           <Button className="bg-[#0d324c] text-white" type="submit" color="success">
             {isEditing ? "Actualizar" : "Registrar"}
           </Button>
         </div>
+
       </form>
     </div>
   );

@@ -9,7 +9,7 @@ export  const listarPacientes=async(req,resp)=>{
 
     try{
 
-        const pacientes = await prisma.$queryRaw`SELECT id_paciente,tipo_identificacion,identificacion,primer_nombre,segundo_nombre,primer_apellido,segundo_apellido,tipo_paciente,fecha_nacimiento,sexo,email,telefono,direccion,mu.nombre AS municipio,ep.nombre AS eps,ep.id_eps AS id_eps 
+        const pacientes = await prisma.$queryRaw`SELECT id_paciente,tipo_identificacion,identificacion,primer_nombre,segundo_nombre,primer_apellido,segundo_apellido,tipo_paciente,fecha_nacimiento,sexo,email,telefono,direccion,mu.nombre AS municipio,ep.nombre AS eps,ep.id_eps AS id_eps,mu.id_municipio 
         FROM pacientes pac
         JOIN municipios mu ON mu.id_municipio = pac.municipioId
         JOIN eps ep ON ep.id_eps = pac.epsId`;
@@ -53,7 +53,7 @@ export  const registrarPaciente=async(req,resp)=>{
                     segundo_nombre: datos.segundo_nombre,
                     primer_apellido: datos.primer_apellido,
                     segundo_apellido: datos.segundo_apellido,
-                    fecha_nacimiento: datos.fecha_nacimiento,
+                    fecha_nacimiento: new Date(datos.fecha_nacimiento),
                     sexo: datos.sexo,
                     email: datos.email,
                     telefono:datos.telefono,
@@ -61,12 +61,12 @@ export  const registrarPaciente=async(req,resp)=>{
                     estado:"Activo",
                     municipio: {
                         connect: {
-                          id_municipio: datos.municipioId // Suponiendo que el municipio con ID 1 ya existe
+                          id_municipio: Number(datos.municipioId) // Suponiendo que el municipio con ID 1 ya existe
                         }
                       },
                       eps: {
                         connect: {
-                          id_eps: datos.epsId // Suponiendo que el municipio con ID 1 ya existe
+                          id_eps: Number(datos.epsId) // Suponiendo que el municipio con ID 1 ya existe
                         }
                       }
 
@@ -103,7 +103,7 @@ export  const actualizarPacienteId=async(req,resp)=>{
                                 segundo_nombre: datos.segundo_nombre,
                                 primer_apellido: datos.primer_apellido,
                                 segundo_apellido: datos.segundo_apellido,
-                                fecha_nacimiento: datos.fecha_nacimiento,
+                                fecha_nacimiento: new Date(datos.fecha_nacimiento),
                                 sexo: datos.sexo,
                                 email: datos.email,
                                 telefono:datos.telefono,

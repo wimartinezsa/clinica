@@ -131,14 +131,17 @@ export function WithSidebar({ children }) {
          {(userRole !== 'Aprendiz' && userRole !== 'Instructor') && (
           <SidebarItem nav="/matriculas" icon={<BookUser size={20} />} text="Estudios" />
         )}
-        {(userRole !== 'Aprendiz' && userRole !== 'Instructor') && (
-          <SidebarItem nav="/fichas" icon={<BookMarked size={20} />} text="Contratos" />
-        )}
+       
+       <SidebarItem nav="/seguimiento" icon={<FolderSearch2 size={20} />} text="Contratos" />
        
         {(userRole !== 'Aprendiz' && userRole !== 'Instructor') && (
           <SidebarItem nav="/etapapractica" icon={<GraduationCap size={20} />} text="Servicios" />
         )}
-        <SidebarItem nav="/seguimiento" icon={<FolderSearch2 size={20} />} text="Configuraciones" />
+      {(userRole !== 'Aprendiz' && userRole !== 'Instructor') && (
+          <SidebarItem nav="/fichas" icon={<BookMarked size={20} />} text="Configuraciones" />
+        )}
+
+      
        
       </Sidebar>
       <div className="w-full bg-white h-screen overflow-auto">

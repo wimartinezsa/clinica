@@ -1,6 +1,6 @@
 import React, { createContext } from 'react'
 import { SeguimientosProvider } from './SeguimientosContext'
-import { PersonasProvider } from './PersonasContext'
+import { PersonasProvider } from './PacientesContext'
 import { NovedadesProvider } from './NovedadContext'
 import { AsignacionProvider } from './AsignacionesContext'
 import AmbienteContext, { AmbienteProvider } from './AmbienteContext'
